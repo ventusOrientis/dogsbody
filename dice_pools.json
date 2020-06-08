@@ -1,0 +1,16 @@
+{
+    "Spieler": [
+        {
+            "Name": "simon",
+            "pool": "3,4"
+        },
+        {
+            "Name": "dennis",
+            "pool": "3,4"
+        },
+        {
+            "Name": "reikja",
+            "pool": "2,3,4"
+        }
+    ]
+}
