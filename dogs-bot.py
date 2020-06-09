@@ -71,36 +71,49 @@ async def roll(ctx, dicepool: str):
         ergebnis = ','.join(wurf)
         endergebnis = ergebnis + ',' + endergebnis
         i = i+2
-    await ctx.send('{0.author} hat {1} gewürfelt'.format(ctx, endergebnis))
+    spieler = str(ctx.author)
+    alter_pool = str(save.load_pool(spieler))
+    endergebnis = endergebnis + alter_pool
+    save.update_pool(spieler,endergebnis)
+    await ctx.send('{0.author} hat {1} gewürfelt'.format(ctx, save.load_pool(spieler)))
+
+@dogsbody.command(name="init", help="Würfelpool initieren")
+async def init_dicepool(ctx):
+    save.save_pool(str(ctx.author),"0")
+    await ctx.send('{0.author} mit Pool {1} initiert'.format(ctx, save.load_pool(str(ctx.author))))
+
+@dogsbody.command(name="clear", help="Würfelpool leeren")
+async def clear_dicepool(ctx):
+    save.update_pool(str(ctx.author),"0")
+    await ctx.send('{0.author} hat nun den Pool: {1}'.format(ctx, save.load_pool(str(ctx.author))))
 
 @dogsbody.command(name="raise", help="Raise/See für Dogs in the Vinyard, nimmt einen Würfelpool und einen Raise/See")
-async def pool_updater(ctx, pool1: str, pool2: str):
+async def pool_updater(ctx, pool2: str):
+    pool1 = str(save.load_pool(str(ctx.author)))
     pool2_elemente = list(pool2.split(','))
     pool1_elemente = list(pool1.split(','))#[key for key in pool1.split(',') if key not in pool2_elemente]
-    
     i = len(pool2_elemente)
     while i>0:
         pool1_elemente.remove(pool2_elemente[i-1])
         i = i-1
 
     antwort = ','.join(pool1_elemente)
-
-    await ctx.send('Neuer Pool von {0.author}: {1}'.format(ctx, antwort))
-
+    save.update_pool(str(ctx.author), antwort)
+    await ctx.send('Neuer Pool von {0.author}: {1}'.format(ctx, save.load_pool(str(ctx.author))))
 
 @dogsbody.command(name="see", help="Raise/See für Dogs in the Vinyard, nimmt einen Würfelpool und einen Raise/See")
-async def pool_updater_see(ctx, pool1: str, pool2: str):
+async def pool_updater_see(ctx, pool2: str):
+    pool1 = str(save.load_pool(str(ctx.author)))
     pool2_elemente = list(pool2.split(','))
     pool1_elemente = list(pool1.split(','))#[key for key in pool1.split(',') if key not in pool2_elemente]
-    
     i = len(pool2_elemente)
     while i>0:
         pool1_elemente.remove(pool2_elemente[i-1])
         i = i-1
 
     antwort = ','.join(pool1_elemente)
-
-    await ctx.send('Neuer Pool von {0.author}: {1}'.format(ctx, antwort))
+    save.update_pool(str(ctx.author), antwort)
+    await ctx.send('Neuer Pool von {0.author}: {1}'.format(ctx, save.load_pool(str(ctx.author))))
 
 
 @dogsbody.command(name="stat", help="Zufälliger Stat-Block für Dogs")
